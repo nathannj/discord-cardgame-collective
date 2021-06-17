@@ -1,0 +1,18 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Card-Collective-Bot/obj
+/Card-Collective-Bot/bin/Debug/netcoreapp3.1
+/.vs
+/CardCollective.Services/bin/Debug/netcoreapp3.1
+/CardCollective.Services/obj
+/Card-Collective-Bot/logs/cardCollective.log
+/Card-Collective-Bot/bin/logs/cardCollective.log
+/Card-Collective-Bot/bin/Debug/cardCollective.log
+/logs/cardCollective.log
+/CardCollectiveBot.BlackJack/obj
+/_logs/cardCollective.log
+/CardCollectiveBot.Console/bin/Debug/netcoreapp3.1
+/CardCollectiveBot.BlackJack/bin/Debug/netcoreapp3.1
+/CardCollectiveBot.Console/obj

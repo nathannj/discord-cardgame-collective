@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CardCollectiveBot.Console": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\njack\\source\\repos\\nathannj\\discord-cardgame-collective\\CardCollectiveBot.Console\\bin\\Debug\\netcoreapp3.1\\CardCollectiveBot.Console.exe"
+    }
+  }
+}
