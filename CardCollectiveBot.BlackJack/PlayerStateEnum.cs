@@ -5,6 +5,7 @@
         Choosing,
         Hit,
         Stand,
-        Bust
+        Bust,
+        BlackJack
     }
 }

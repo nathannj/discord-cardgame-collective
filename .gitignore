@@ -19,3 +19,6 @@
 /CardCollectiveBot.Misc/bin/Debug/netcoreapp3.1
 /CardCollectiveBot.DeckOfCards/obj
 /CardCollectiveBot.Misc/obj
+/CardCollectiveBot.BlackJack.Test/bin/Debug/netcoreapp3.1
+/CardCollectiveBot.BlackJack.Test/obj
+/CardCollectiveBot.DeckOfCards/bin/Debug/netcoreapp3.1

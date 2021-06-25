@@ -13,6 +13,8 @@ namespace CardCollectiveBot.BlackJack
 
         public List<PlayingCard> DealersHand { get; set; }
 
+        public List<PlayingCard> FaceDownCards { get; set; }
+
         public List<Player> Players { get; set; }
     }
 }
