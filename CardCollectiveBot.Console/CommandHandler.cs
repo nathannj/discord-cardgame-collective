@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using CardCollectiveBot.Misc;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
@@ -26,7 +27,8 @@ namespace CardCollectiveBot.Console
         {
             _client.MessageReceived += HandleCommandAsync;
 
-            var modules = await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            await _commands.AddModulesAsync(Assembly.GetAssembly(typeof(Voice)), _services);
         }
 
         private async Task HandleCommandAsync(SocketMessage messageParam)

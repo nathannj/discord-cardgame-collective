@@ -5,9 +5,13 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardCollectiveBot.Common", "CardCollective.Services\CardCollectiveBot.Common.csproj", "{7BE8BE6E-F677-451F-942D-366D4837AE13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardCollectiveBot.BlackJack", "CardCollectiveBot.BlackJack\CardCollectiveBot.BlackJack.csproj", "{1B5BE6C2-3B1D-482A-B01B-11459C5B0422}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardCollectiveBot.BlackJack", "CardCollectiveBot.BlackJack\CardCollectiveBot.BlackJack.csproj", "{1B5BE6C2-3B1D-482A-B01B-11459C5B0422}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardCollectiveBot.Console", "CardCollectiveBot.Console\CardCollectiveBot.Console.csproj", "{92CF832B-4C7E-41D7-99A3-286EA3984D52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardCollectiveBot.Misc", "CardCollectiveBot.Misc\CardCollectiveBot.Misc.csproj", "{4F686F8E-8B15-4B35-B279-AFC047CCEE19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardCollectiveBot.DeckOfCards", "CardCollectiveBot.DeckOfCards\CardCollectiveBot.DeckOfCards.csproj", "{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +59,30 @@ Global
 		{92CF832B-4C7E-41D7-99A3-286EA3984D52}.Release|x64.Build.0 = Release|Any CPU
 		{92CF832B-4C7E-41D7-99A3-286EA3984D52}.Release|x86.ActiveCfg = Release|Any CPU
 		{92CF832B-4C7E-41D7-99A3-286EA3984D52}.Release|x86.Build.0 = Release|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Debug|x64.Build.0 = Debug|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Debug|x86.Build.0 = Debug|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Release|x64.ActiveCfg = Release|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Release|x64.Build.0 = Release|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Release|x86.ActiveCfg = Release|Any CPU
+		{4F686F8E-8B15-4B35-B279-AFC047CCEE19}.Release|x86.Build.0 = Release|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Debug|x64.Build.0 = Debug|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Debug|x86.Build.0 = Debug|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Release|x64.ActiveCfg = Release|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Release|x64.Build.0 = Release|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Release|x86.ActiveCfg = Release|Any CPU
+		{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

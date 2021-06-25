@@ -14,9 +14,12 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CardCollective.Services\CardCollectiveBot.Common.csproj" />
+    <ProjectReference Include="..\CardCollectiveBot.BlackJack\CardCollectiveBot.BlackJack.csproj" />
+    <ProjectReference Include="..\CardCollectiveBot.Misc\CardCollectiveBot.Misc.csproj" />
   </ItemGroup>
 </Project>
