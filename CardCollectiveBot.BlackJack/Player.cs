@@ -1,4 +1,5 @@
 ﻿using CardCollectiveBot.DeckOfCards;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,21 +14,27 @@ namespace CardCollectiveBot.BlackJack
 
         public string Nickname { get; private set; }
 
+        [JsonProperty]
         public ReadOnlyCollection<PlayingCard> Hand
         {
-            get { return ActualHand.AsReadOnly(); }
+            get { return ActualHand?.AsReadOnly(); }
+
+            private set { ActualHand = value?.ToList(); }
         }
 
-        public List<PlayingCard> ActualHand { get; private set; }
+        private List<PlayingCard> ActualHand { get; set; }
 
         public PlayerState State { get; private set; }
 
-        public Player(ulong id, string nickname)
+        public int Wager { get; }
+
+        public Player(ulong id, string nickname, int wager, PlayerState state = PlayerState.Choosing)
         {
             Id = id;
             Nickname = nickname;
             ActualHand = new List<PlayingCard>();
-            State = PlayerState.Choosing;
+            State = state;
+            Wager = wager;
         }
 
         public int CountScore()

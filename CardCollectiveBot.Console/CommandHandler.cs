@@ -1,11 +1,9 @@
-﻿using CardCollectiveBot.Misc;
-using Discord;
+﻿using CardCollectiveBot.Currency.Module;
+using CardCollectiveBot.Misc;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CardCollectiveBot.Console
@@ -26,9 +24,10 @@ namespace CardCollectiveBot.Console
         public async Task InstallCommandsAsync()
         {
             _client.MessageReceived += HandleCommandAsync;
-
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
             await _commands.AddModulesAsync(Assembly.GetAssembly(typeof(Voice)), _services);
+            await _commands.AddModulesAsync(Assembly.GetAssembly(typeof(BlackJack.Module.BlackJack)), _services);
+            await _commands.AddModulesAsync(Assembly.GetAssembly(typeof(CurrencyModule)), _services);
         }
 
         private async Task HandleCommandAsync(SocketMessage messageParam)

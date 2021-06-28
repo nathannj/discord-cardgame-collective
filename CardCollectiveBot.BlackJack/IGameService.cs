@@ -8,18 +8,18 @@ namespace CardCollectiveBot.BlackJack
 {
     public interface IGameService
     {
-        public IResponse CreateGame(IGuildUser player);
+        public IResponse<EmbedBuilder> CreateGame(IGuildUser player);
 
-        public IResponse JoinGame(IGuildUser player);
+        public IResponse<EmbedBuilder> JoinGame(IGuildUser player, int wager);
 
-        public IResponse StartGame(IGuildUser player);
+        public IResponse<EmbedBuilder> StartGame(IGuildUser player);
 
-        public IResponse Hit(IGuildUser player);
+        public IResponse<EmbedBuilder> Hit(IGuildUser player);
 
-        public IResponse Stand(IGuildUser player);
+        public IResponse<EmbedBuilder> Stand(IGuildUser player);
 
-        public IResponse ResetGame(IGuildUser player);
+        public IResponse<EmbedBuilder> ResetGame(ulong guildId, bool shouldRefund = false);
 
-        public IResponse DeleteGame(IGuildUser player);
+        public IResponse<EmbedBuilder> DeleteGame(IGuildUser player);
     }
 }

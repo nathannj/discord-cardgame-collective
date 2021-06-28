@@ -33,6 +33,6 @@ namespace CardCollectiveBot.Console
 
                     services.SetupDefaultServiceCollection(config)
                     .AddHostedService<Bot>();
-                });        
+                });
     }
 }

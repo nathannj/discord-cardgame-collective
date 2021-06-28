@@ -7,6 +7,10 @@
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.8" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
@@ -20,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CardCollective.Services\CardCollectiveBot.Common.csproj" />
     <ProjectReference Include="..\CardCollectiveBot.BlackJack\CardCollectiveBot.BlackJack.csproj" />
+    <ProjectReference Include="..\CardCollectiveBot.Currency\CardCollectiveBot.Currency.csproj" />
     <ProjectReference Include="..\CardCollectiveBot.Misc\CardCollectiveBot.Misc.csproj" />
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ namespace CardCollectiveBot.BlackJack.Test
         [SetUp]
         public void SetUp()
         {
-            PlayerToTest = new Player(1, "TestNickname");
+            PlayerToTest = new Player(1, "TestNickname", 100);
         }
 
         [Test]
@@ -20,11 +20,13 @@ namespace CardCollectiveBot.BlackJack.Test
         {
             ulong id = 1;
             var nickname = "TestNickname";
+            var wager = 100;
 
-            PlayerToTest = new Player(id, nickname);
+            PlayerToTest = new Player(id, nickname, wager);
 
             Assert.AreEqual(id, PlayerToTest.Id);
             Assert.AreEqual(nickname, PlayerToTest.Nickname);
+            Assert.AreEqual(wager, PlayerToTest.Wager);
             Assert.IsTrue(PlayerToTest.Hand != null);
             Assert.IsTrue(PlayerToTest.Hand.Count == 0);
             Assert.AreEqual(PlayerState.Choosing, PlayerToTest.State);

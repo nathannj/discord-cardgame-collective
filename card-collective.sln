@@ -13,7 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardCollectiveBot.Misc", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardCollectiveBot.DeckOfCards", "CardCollectiveBot.DeckOfCards\CardCollectiveBot.DeckOfCards.csproj", "{4BEE7A48-3A4F-4346-B6AF-BE774EE20849}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardCollectiveBot.BlackJack.Test", "CardCollectiveBot.BlackJack.Test\CardCollectiveBot.BlackJack.Test.csproj", "{BE1E99D4-033B-4491-9247-051692FB000B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardCollectiveBot.BlackJack.Test", "CardCollectiveBot.BlackJack.Test\CardCollectiveBot.BlackJack.Test.csproj", "{BE1E99D4-033B-4491-9247-051692FB000B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardCollectiveBot.Data", "CardCollectiveBot.Data\CardCollectiveBot.Data.csproj", "{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardCollectiveBot.Currency", "CardCollectiveBot.Currency\CardCollectiveBot.Currency.csproj", "{A771C5C0-780F-44DD-A8AF-B18FFC331D19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +101,30 @@ Global
 		{BE1E99D4-033B-4491-9247-051692FB000B}.Release|x64.Build.0 = Release|Any CPU
 		{BE1E99D4-033B-4491-9247-051692FB000B}.Release|x86.ActiveCfg = Release|Any CPU
 		{BE1E99D4-033B-4491-9247-051692FB000B}.Release|x86.Build.0 = Release|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Debug|x64.Build.0 = Debug|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Debug|x86.Build.0 = Debug|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Release|x64.ActiveCfg = Release|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Release|x64.Build.0 = Release|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Release|x86.ActiveCfg = Release|Any CPU
+		{CE5C3CAA-FAB7-4140-AB64-DA76E476785C}.Release|x86.Build.0 = Release|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Debug|x64.Build.0 = Debug|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Debug|x86.Build.0 = Debug|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Release|x64.ActiveCfg = Release|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Release|x64.Build.0 = Release|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Release|x86.ActiveCfg = Release|Any CPU
+		{A771C5C0-780F-44DD-A8AF-B18FFC331D19}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
