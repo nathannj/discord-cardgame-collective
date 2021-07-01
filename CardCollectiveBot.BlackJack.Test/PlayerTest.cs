@@ -54,15 +54,15 @@ namespace CardCollectiveBot.BlackJack.Test
             Assert.AreEqual(PlayerState.Choosing, PlayerToTest.State);
         }
 
-        [TestCase(PlayerState.Hit, 20, 8, 12, 2)]
+        [TestCase(PlayerState.Choosing, 20, 8, 12, 2)]
         [TestCase(PlayerState.BlackJack, 21, 10, 14)]
-        [TestCase(PlayerState.Hit, 12, 14, 14)]
+        [TestCase(PlayerState.Choosing, 12, 14, 14)]
         [TestCase(PlayerState.Bust, 26, 8, 8, 12)]
-        public void TakeCard_Given_Cards_Set_Expected_State_And_Expected_CountScore_Value(PlayerState expectedState, int expectedScore, params int[] cardValaues)
+        public void TakeCard_Given_Cards_Set_Expected_State_And_Expected_CountScore_Value(PlayerState expectedState, int expectedScore, params int[] cardValues)
         {
-            foreach(var val in cardValaues)
+            foreach(var val in cardValues)
             {
-                PlayerToTest.TakeCard(new PlayingCard(SuitEnum.Club, val));
+                PlayerToTest.Hit(new PlayingCard(SuitEnum.Club, val));
             }
 
             Assert.AreEqual(expectedState, PlayerToTest.State);

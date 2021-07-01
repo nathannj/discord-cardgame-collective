@@ -36,7 +36,7 @@ namespace CardCollectiveBot.Console
             {
                 LogLevel = LogSeverity.Info,
                 CaseSensitiveCommands = false,
-                DefaultRunMode = RunMode.Async
+                DefaultRunMode = RunMode.Async                
             });
 
             new CommandLoggingService(_client, _commands, _commandLogger);

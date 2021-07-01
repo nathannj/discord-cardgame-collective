@@ -18,8 +18,6 @@ namespace CardCollectiveBot.BlackJack
         public ReadOnlyCollection<PlayingCard> Hand
         {
             get { return ActualHand?.AsReadOnly(); }
-
-            private set { ActualHand = value?.ToList(); }
         }
 
         private List<PlayingCard> ActualHand { get; set; }
@@ -33,6 +31,16 @@ namespace CardCollectiveBot.BlackJack
             Id = id;
             Nickname = nickname;
             ActualHand = new List<PlayingCard>();
+            State = state;
+            Wager = wager;
+        }
+
+        [JsonConstructor]
+        public Player(ulong id, string nickname, int wager, List<PlayingCard> hand, PlayerState state)
+        {
+            Id = id;
+            Nickname = nickname;
+            ActualHand = hand;
             State = state;
             Wager = wager;
         }
@@ -58,7 +66,7 @@ namespace CardCollectiveBot.BlackJack
             return total;
         }
 
-        public List<PlayingCard> TakeCard(PlayingCard card)
+        public List<PlayingCard> Hit(PlayingCard card)
         {
             ActualHand.Add(card);
 
@@ -66,13 +74,9 @@ namespace CardCollectiveBot.BlackJack
             {
                 State = PlayerState.Bust;
             }
-            else if (CountScore() == 21)
+            else if (Hand.Count == 2 && CountScore() == 21)
             {
                 State = PlayerState.BlackJack;
-            }
-            else
-            {
-                State = PlayerState.Hit;
             }
 
             return ActualHand;

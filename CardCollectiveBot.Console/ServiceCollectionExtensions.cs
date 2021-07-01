@@ -2,6 +2,7 @@
 using CardCollectiveBot.Common;
 using CardCollectiveBot.Currency;
 using CardCollectiveBot.Data;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
@@ -25,8 +26,18 @@ namespace CardCollectiveBot.Console
                 .AddScoped<ICommandLoggingService, CommandLoggingService>()
                 .AddScoped<IGameService, GameService>()
                 .AddScoped<ICurrencyService, CurrencyService>()
-                .AddSingleton(new CommandService())
-                .AddSingleton(new DiscordSocketClient())
+                .AddSingleton(new CommandService(new CommandServiceConfig
+                {
+                    LogLevel = LogSeverity.Info,
+                    CaseSensitiveCommands = false,
+                    DefaultRunMode = RunMode.Async
+                }))
+                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
+                {
+                    AlwaysDownloadUsers = true,
+                    ConnectionTimeout = 10,
+                    DefaultRetryMode = RetryMode.RetryRatelimit
+                }))
                 .Configure<Common.Configuration.Discord>(config.GetSection(nameof(Common.Configuration.Discord)))
                 .AddLogging(configure =>
                 {

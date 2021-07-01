@@ -19,14 +19,14 @@ namespace CardCollectiveBot.BlackJack
 
         }
 
-        public IResponse<EmbedBuilder> CreateGame(IGuildUser player)
+        public IResponse<EmbedBuilder> CreateGame(IGuildUser player, ulong channelId)
         {
-            if (GetMatch(player.GuildId) != null)
+            if (GetMatch(player.GuildId, channelId) != null)
             {
                 return new BlackjackResponse(null, false, null, "Game already created! Use !Blackjack Reset to start a new match or !BlackJack Delete to delete all data for server.");
             }
 
-            var match = new BlackJackMatch(player.GuildId);
+            var match = new BlackJackTable(player.GuildId, channelId);
 
             SaveMatch(match);
 
@@ -34,151 +34,130 @@ namespace CardCollectiveBot.BlackJack
 
         }
 
-        public IResponse<EmbedBuilder> JoinGame(IGuildUser player, int wager)
+        public IResponse<EmbedBuilder> JoinGame(IGuildUser player, ulong channelId, int wager)
         {
-            var match = GetMatch(player.GuildId);
+            var match = GetMatch(player.GuildId, channelId);
 
             if (match == null)
             {
                 return new BlackjackResponse(null, false, null, "Game does not exist! Use !Blackjack Create to start a new match");
             }
 
-            if (match?.Dealer?.Hand != null && match.Dealer.Hand.Count > 0)
+            if (match.HasTableBeganMatch)
             {
                 return new BlackjackResponse(null, false, null, "Game is in progress! Please wait for it to finish or type !Blackjack Reset to start over.");
             }
 
 
-            if (match.Players.Any(e => e.Id == player.Id))
+            if (match.IsPlayerInGame(player.Id))
             {
                 return new BlackjackResponse(null, false, null, "You are already a part of this game! Please use !Blackjack Start to begin the match");
             }
 
-            match.Players.Add(new Player(player.Id, player.Nickname ?? player.Username, wager));
+            match.AddPlayerToMatch(new Player(player.Id, player.Nickname ?? player.Username, wager));
 
             SaveMatch(match);
 
             return new BlackjackResponse(null, true, null, $"{player.Nickname} has joined the lobby with a wager of {wager}");
         }
 
-        public IResponse<EmbedBuilder> StartGame(IGuildUser player)
+        public IResponse<EmbedBuilder> StartGame(IGuildUser player, ulong channelId)
         {
-            var match = GetMatch(player.GuildId);
+            var match = GetMatch(player.GuildId, channelId).SetUpInitialTable();
 
-            foreach (var matchPlayer in match.Players)
-            {
-                matchPlayer.TakeCard(match.Deck.Pop());
-            }
+            SaveMatch(match);
 
-            match.Dealer.TakeCard(match.Deck.Pop());
-
-            foreach (var matchPlayer in match.Players)
-            {
-                matchPlayer.TakeCard(match.Deck.Pop());
-            }
-
-            match.FaceDownCard = match.Deck.Pop();
-
-            var dealerPeek = new Player(0, "Dealer", 0);
-
-            var dealerPeekHand = match.Dealer.Hand.ToList();
-            dealerPeekHand.Add(match.FaceDownCard);
-
-            foreach (var card in dealerPeekHand)
-            {
-                dealerPeek.TakeCard(card);
-            }
-
-            string message;
-
-            if (dealerPeek.State == PlayerState.BlackJack)
-            {
-                return FinishMatch(match);
-                return new BlackjackResponse(match.RefreshScoreboard(true), otherMessages: message);
-            }
-
-            return NextRound(match);
+            return new BlackjackResponse(match.Scoreboard, true, match.IsEndOfMatch ? match.GetRewards().ToList() : null);
         }
 
-        public IResponse<EmbedBuilder> Hit(IGuildUser player)
+        public IResponse<EmbedBuilder> Hit(IGuildUser player, ulong channelId)
         {
-            var match = GetMatch(player.GuildId);
+            var match = GetMatch(player.GuildId, channelId);
 
             if (match == null)
             {
                 return new BlackjackResponse(null, false, null, "Game does not exist! Use !Blackjack Create to start a new match");
             }
 
-            var matchPlayer = match?.Players?.FirstOrDefault(p => p.Id == player.Id);
+            var matchPlayer = match.HitPlayer(player.Id);
 
             if (matchPlayer == null)
             {
                 return new BlackjackResponse(null, false, null, "You are not a part of this game. Please wait for it to end or use !Blackjack Reset to start a new game");
             }
 
-            if (matchPlayer.State != PlayerState.Choosing)
-            {
-                return new BlackjackResponse(null, false, null, "You have either already hit this round or have finished calls for the match. Please wait for other players to finish.");
-            }
+            SaveMatch(match);
 
-            var newCard = match.Deck.Pop();
-
-            matchPlayer.TakeCard(newCard);
-
-            if (matchPlayer.State == PlayerState.Bust)
-            {
-                match.Scoreboard.WithFooter($"{matchPlayer.Nickname} has called Hit and received {newCard}. {matchPlayer.Nickname} HAS WENT BUST");
-            }
-            else
-            {
-                match.Scoreboard.WithFooter($"{matchPlayer.Nickname} has called Hit and received {newCard}.");
-            }
-
-            return PostChoiceCheck(match);
+            return match.IsEndOfMatch ? FinishMatch(match) : new BlackjackResponse(match.Scoreboard);
         }
 
-        public IResponse<EmbedBuilder> Stand(IGuildUser player)
+        public IResponse<EmbedBuilder> Stand(IGuildUser player, ulong channelId)
         {
-            var match = GetMatch(player.GuildId);
+            var match = GetMatch(player.GuildId, channelId);
 
             if (match == null)
             {
                 return new BlackjackResponse(null, false, null, "Game does not exist! Use !Blackjack Create to start a new match");
             }
 
-            var matchPlayer = match?.Players?.FirstOrDefault(p => p.Id == player.Id);
+            var matchPlayer = match.StandPlayer(player.Id);
 
             if (matchPlayer == null)
             {
                 return new BlackjackResponse(null, false, null, "You are not a part of this game. Please wait for it to end or use !Blackjack Reset to start a new game");
             }
 
-            matchPlayer.Stand();
+            SaveMatch(match);
 
-            return PostChoiceCheck(match);
+            return match.IsEndOfMatch ? FinishMatch(match) : new BlackjackResponse(match.Scoreboard);
         }
 
-        public IResponse<EmbedBuilder> ResetGame(ulong guildId, bool shouldRefund = false)
+        public IResponse<EmbedBuilder> GetLobby(IGuildUser player, ulong channelId)
         {
-            var match = GetMatch(guildId);
+            var match = GetMatch(player.GuildId, channelId);
+
+            if (match == null)
+            {
+                return new BlackjackResponse(null, false, null, "Game does not exist! Use !Blackjack Create to start a new match");
+            }
+
+            var responseEmbed = new EmbedBuilder 
+            { 
+                Title = "Blackjack - Lobby",
+                Color = Color.DarkerGrey,
+                Footer = new EmbedFooterBuilder { Text = ""}
+            };          
+            
+            foreach(var matchPlayer in match.Players)
+            {
+                responseEmbed.AddField("Name", matchPlayer.Nickname, true);
+                responseEmbed.AddField("Wager", matchPlayer.Wager, true);
+            }
+            
+            return new BlackjackResponse(responseEmbed);
+        }
+
+        public IResponse<EmbedBuilder> ResetGame(ulong guildId, ulong channelId, bool shouldRefund = false)
+        {
+            var match = GetMatch(guildId, channelId);
 
             if (match == null)
             {
                 return new BlackjackResponse(null, false, null, "Game does not exist! Use !Blackjack Create to create a match.");
             }
 
-            var refunds = match.Players.Select(e => new Reward(e.Id, e.Nickname, e.Wager)).ToList();
+            var refunds = match.GetWagersAsRewards();
 
-            match = new BlackJackMatch(guildId);
+            match = new BlackJackTable(guildId, channelId);
 
             SaveMatch(match);
 
-            return new BlackjackResponse(null, true, refunds, "New Game created!");
+            return new BlackjackResponse(null, true, shouldRefund ? refunds.ToList() : null, "New Game created!");
         }
 
-        public IResponse<EmbedBuilder> DeleteGame(IGuildUser player)
+        public IResponse<EmbedBuilder> DeleteGame(IGuildUser player, ulong channelId)
         {
-            if (GetMatch(player.GuildId) == null)
+            if (GetMatch(player.GuildId, channelId) == null)
             {
                 return new BlackjackResponse(null, false, null, "Game does not exist! Use !Blackjack Create to create a match.");
             }
@@ -188,64 +167,23 @@ namespace CardCollectiveBot.BlackJack
             return new BlackjackResponse(null, true, null, "Save Data Deleted!");
         }
 
-        private IResponse<EmbedBuilder> PostChoiceCheck(BlackJackMatch match)
+        private IResponse<EmbedBuilder> FinishMatch(BlackJackTable match)
         {
-            if (match.Players.Any(e => e.State == PlayerState.Choosing))
-            {
-                SaveMatch(match);
-                match.Scoreboard.WithFooter($"{match.Scoreboard.Footer?.Text} Round still in progress!");
-                match.RefreshScoreboard();
-                return new BlackjackResponse(match.Scoreboard, true, null);
-            }
-            else if (match.Players.All(e => e.State != PlayerState.Choosing && e.State != PlayerState.Hit))
-            {
-                return FinishMatch(match);
-            }
-            else
-            {
-                return NextRound(match);
-            }
-        }
+            match.FinishMatch();
 
-        private IResponse<EmbedBuilder> NextRound(BlackJackMatch match)
-        {
-            foreach (var player in match.Players.Where(e => e.State == PlayerState.Hit))
-            {
-                player.ResetState();
-            }
-
-            SaveMatch(match);
-            match.Scoreboard.Footer = new EmbedFooterBuilder { Text = $"{match.Scoreboard.Footer?.Text} Round over! Next round commencing..." };
-            match.RefreshScoreboard();
-            return new BlackjackResponse(match.Scoreboard, true, null);
-        }
-
-        private IResponse<EmbedBuilder> FinishMatch(BlackJackMatch match)
-        {
-            match.Dealer.TakeCard(match.FaceDownCard);
-
-            while (match.Dealer.CountScore() < 17 && match.Dealer.State != PlayerState.Bust)
-            {
-                match.Dealer.TakeCard(match.Deck.Pop());
-            }
-
-            match.RefreshScoreboard(true);
-
-            ResetGame(match.GuildId).OtherMessages.First();
-
-            match.Scoreboard.WithFooter($"{match.Scoreboard.Footer?.Text} game has ended! Rewards distributed and new game has been set up");
+            ResetGame(match.GuildId, match.ChannelId);
 
             return new BlackjackResponse(match.Scoreboard, true, match.GetRewards().ToList());
         }
 
-        private BlackJackMatch GetMatch(ulong guildId)
+        private BlackJackTable GetMatch(ulong guildId, ulong channelId)
         {
-            if (File.Exists(@$"C:\Users\njack\source\repos\nathannj\discord-cardgame-collective\CardCollectiveBot.BlackJack\Matches\{guildId}.json"))
+            if (File.Exists(@$"C:\Users\njack\source\repos\nathannj\discord-cardgame-collective\CardCollectiveBot.BlackJack\Matches\{guildId}_{channelId}.json"))
             {
-                using (StreamReader r = new StreamReader(@$"C:\Users\njack\source\repos\nathannj\discord-cardgame-collective\CardCollectiveBot.BlackJack\Matches\{guildId}.json"))
+                using (StreamReader r = new StreamReader(@$"C:\Users\njack\source\repos\nathannj\discord-cardgame-collective\CardCollectiveBot.BlackJack\Matches\{guildId}_{channelId}.json"))
                 {
                     string json = r.ReadToEnd();
-                    var item = JsonConvert.DeserializeObject<BlackJackMatch>(json);
+                    var item = JsonConvert.DeserializeObject<BlackJackTable>(json);
 
                     return item;
                 }
@@ -254,12 +192,12 @@ namespace CardCollectiveBot.BlackJack
             return null;
         }
 
-        private bool SaveMatch(BlackJackMatch match)
+        private bool SaveMatch(BlackJackTable match)
         {
             try
             {
                 var jsonItem = JsonConvert.SerializeObject(match);
-                File.WriteAllText(@$"C:\Users\njack\source\repos\nathannj\discord-cardgame-collective\CardCollectiveBot.BlackJack\Matches\{match.GuildId}.json", jsonItem);
+                File.WriteAllText(@$"C:\Users\njack\source\repos\nathannj\discord-cardgame-collective\CardCollectiveBot.BlackJack\Matches\{match.GuildId}_{match.ChannelId}.json", jsonItem);
                 return true;
             }
             catch
@@ -267,6 +205,6 @@ namespace CardCollectiveBot.BlackJack
                 return false;
             }
 
-        }
+        }        
     }
 }

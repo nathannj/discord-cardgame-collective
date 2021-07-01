@@ -18,6 +18,7 @@ namespace CardCollectiveBot.BlackJack
             Payload = responseMessage;
             IsSuccess = isSuccess;
             OtherMessages = otherMessages;
+            Rewards = rewards;
         }
     }
 }

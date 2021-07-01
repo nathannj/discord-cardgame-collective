@@ -42,15 +42,15 @@ namespace CardCollectiveBot.Currency.Module
                 Description = "Commands and Information around mangcoins",
                 Fields = new List<EmbedFieldBuilder>
                 {
-                    new EmbedFieldBuilder{Name = "!Currency", Value = "Returns how many mangcoins you have"},
-                    new EmbedFieldBuilder{Name = "!Currency Create", Value = "If not already existing, you will get a new account"},
-                    new EmbedFieldBuilder{Name = "!Currency Transfer {username}", Value = "Transfers mangcoins from your account to the given users account"},
-                    new EmbedFieldBuilder{Name = "!Currency Reward {username}", Value = "SERVER ADMIN ONLY: Give a user TODO"},
-                    new EmbedFieldBuilder{Name = "Earning Mangcoins", Value = "TODO: Being active within server earns mangcoins"},
+                    new EmbedFieldBuilder{Name = "!Currency", Value = "Returns how many mangcoins you have."},
+                    new EmbedFieldBuilder{Name = "!Currency Create", Value = "If not already existing, you will get a new account."},
+                    new EmbedFieldBuilder{Name = "!Currency Transfer {coins} {username}", Value = "Transfers mangcoins from your account to the given users account."},
+                    new EmbedFieldBuilder{Name = "!Currency Reward {coins} {username}", Value = "ADMIN ONLY: reward a given user with a given number of coins."},
+                    new EmbedFieldBuilder{Name = "Earning Mangcoins", Value = "Chatting in text chats this bot has access to will earn Mangcoins. Using This bots commands will not earn coins."},
                 }
             };
 
-            await Context.Channel.SendMessageAsync("", false, embedBuilder.Build());
+            await ReplyAsync("", false, embedBuilder.Build());
         }
 
         [Command("create")]
@@ -60,11 +60,48 @@ namespace CardCollectiveBot.Currency.Module
 
             if (createResponse.IsSuccess)
             {
-                await Context.Channel.SendMessageAsync($"Account created successfully for {Context.User.Username}. You have a starting coin balance of {createResponse.Payload}");
+                await ReplyAsync($"Account created successfully for {Context.User.Username}. You have a starting coin balance of {createResponse.Payload}");
             }
             else
             {
-                await Context.Channel.SendMessageAsync($"An error coccured: Does your account already exist? Check your balance with _!Currency_");
+                await ReplyAsync($"An error coccured: Does your account already exist? Check your balance with _!Currency_");
+            }
+        }
+
+        [Command("transfer")]
+        public async Task Transfer(int coins, string user)
+        {
+            var users = await Context.Guild.GetUsersAsync().FlattenAsync();
+            var userToSendTo = users.FirstOrDefault(e => $"{e.Username}#{e.Discriminator}" == user);
+
+            if (userToSendTo != null && _currencyService.GetCoins(Context.User.Id).Payload > coins 
+                && _currencyService.WithdrawCoins(Context.User.Id, coins).IsSuccess 
+                && _currencyService.DepositCoins(userToSendTo.Id, coins).IsSuccess)
+            {
+                await ReplyAsync($"Succesfully transferred {coins} Mangcoins to {user}");
+            }
+            else
+            {
+                await ReplyAsync($"Transfer Failed. Please ensure you have the necessary Mangcoins and that the specified user exists and has a mangcoins account.");
+            }
+        }
+
+        [Command("reward")]
+        public async Task Reward(int coins, string user)
+        {
+            
+            var users = await Context.Guild.GetUsersAsync().FlattenAsync();
+            var userToSendTo = users.FirstOrDefault(e => $"{e.Username}#{e.Discriminator}" == user);
+
+            if ((Context.User as IGuildUser).GuildPermissions.Administrator
+                && userToSendTo != null
+                && _currencyService.DepositCoins(userToSendTo.Id, coins).IsSuccess)
+            {
+                await ReplyAsync($"Succesfully rewarded {coins} Mangcoins to {user}");
+            }
+            else
+            {
+                await ReplyAsync($"Transfer Failed. Please ensure you are an admin, that the specified user exists and has a mangcoins account.");
             }
         }
     }
