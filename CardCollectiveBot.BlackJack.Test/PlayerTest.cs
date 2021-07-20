@@ -1,4 +1,4 @@
-using CardCollectiveBot.DeckOfCards;
+using CardCollectiveBot.BlackJack.Cards;
 using NUnit.Framework;
 
 namespace CardCollectiveBot.BlackJack.Test

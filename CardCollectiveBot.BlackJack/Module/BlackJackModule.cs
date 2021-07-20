@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace CardCollectiveBot.BlackJack.Module
 {
     [Group("Blackjack")]
+    [Alias("bj")]
     public class BlackJackModule : ModuleBase<SocketCommandContext>
     {
         public IGameService _gameService { get; set; }
@@ -46,10 +47,13 @@ namespace CardCollectiveBot.BlackJack.Module
                     new EmbedFieldBuilder{Name = "!Blackjack Join", Value = "Adds the user to the channels existing table."},
                     new EmbedFieldBuilder{Name = "!Blackjack Lobby", Value = "This will return the players in the match along with their wagers."},
                     new EmbedFieldBuilder{Name = "!Blackjack Start", Value = "Starts the match and stops anyone else from joining."},
+                    new EmbedFieldBuilder{Name = "!Blackjack DoubleDown", Value = "Call a double down"},
+                    new EmbedFieldBuilder{Name = "!Blackjack SplitPair", Value = "Split pairs."},
                     new EmbedFieldBuilder{Name = "!Blackjack Hit", Value = "Calls hit and gives a new card to the user."},
                     new EmbedFieldBuilder{Name = "!Blackjack Stand", Value = "Calls stand which will stop the user making anymore calls until the end of the match."},
                     new EmbedFieldBuilder{Name = "!Blackjack Reset", Value = "This will reset the match and players will have to rejoin. This will refund players from the game being reset."},
-                    new EmbedFieldBuilder{Name = "!Blackjack Delete", Value = "This will delete Save data, !Blackjack create will have to be called again to create new data."}                    
+                    new EmbedFieldBuilder{Name = "!Blackjack Delete", Value = "This will delete Save data, !Blackjack create will have to be called again to create new data."},
+                    new EmbedFieldBuilder{Name = "Shorthand command aliases", Value = "The following words have acronyms to make using them easier:\nBlackjack - bj\nHit - h\nStand - s\n DoubleDown - dd\nSplitPair - sp\nJoin - j"}
                 }
             };
 
@@ -65,11 +69,12 @@ namespace CardCollectiveBot.BlackJack.Module
         }
 
         [Command("Join")]
+        [Alias("j")]
         public async Task JoinBlackJack(int wager)
         {
             var GetCoinsResponse = _currencyService.GetCoins(Context.User.Id);
 
-            if(GetCoinsResponse.IsSuccess &&  GetCoinsResponse.Payload >= wager && _currencyService.WithdrawCoins(Context.User.Id, wager).IsSuccess)
+            if(GetCoinsResponse.IsSuccess && GetCoinsResponse.Payload > 0 && GetCoinsResponse.Payload >= wager && _currencyService.WithdrawCoins(Context.User.Id, wager).IsSuccess)
             {
                 var joinGameResponse = _gameService.JoinGame(Context.User as IGuildUser, Context.Channel.Id, wager);
                 
@@ -90,7 +95,39 @@ namespace CardCollectiveBot.BlackJack.Module
             await GenerateBlackJackResponse(response);
         }
 
+        [Command("DoubleDown")]
+        [Alias("dd")]
+        public async Task DoubleDownBlackJack()
+        {
+            var playersWager = _gameService.GetPlayerWager(Context.User as IGuildUser, Context.Channel.Id);
+
+            var GetCoinsResponse = _currencyService.GetCoins(Context.User.Id);
+
+            IResponse<EmbedBuilder> response = null;
+
+            if(playersWager.IsSuccess && playersWager.Payload > 0 
+                && GetCoinsResponse.IsSuccess && GetCoinsResponse.Payload > 0 && GetCoinsResponse.Payload >= playersWager.Payload
+                && _currencyService.WithdrawCoins(Context.User.Id, playersWager.Payload).IsSuccess)
+            {                
+                response = _gameService.DoubleDown(Context.User as IGuildUser, Context.Channel.Id);
+
+                await ReplyAsync($"{Context.User.Username} has Doubled Down. {Context.User.Username}'s wager is now at {playersWager.Payload*2}");
+            }
+
+            await GenerateBlackJackResponse(response);
+        }
+
+        [Command("SplitPair")]
+        [Alias("sp")]
+        public async Task SplittingPairsBlackJack()
+        {
+            var response = _gameService.SplitPair(Context.User as IGuildUser, Context.Channel.Id);
+
+            await GenerateBlackJackResponse(response);
+        }
+
         [Command("Hit")]
+        [Alias("h")]
         public async Task HitBlackJack()
         {
             var response = _gameService.Hit(Context.User as IGuildUser, Context.Channel.Id);
@@ -100,6 +137,7 @@ namespace CardCollectiveBot.BlackJack.Module
         }
 
         [Command("Stand")]
+        [Alias("s")]
         public async Task StandBlackJack()
         {
             var response = _gameService.Stand(Context.User as IGuildUser, Context.Channel.Id);
@@ -133,13 +171,13 @@ namespace CardCollectiveBot.BlackJack.Module
 
         private async Task GenerateBlackJackResponse(IResponse<EmbedBuilder> response)
         {
-            if (response.Payload != null)
+            if (response?.Payload != null)
             {
                 await Context.Channel.SendMessageAsync("", false, response.Payload.Build());
             }
 
 
-            if (response.OtherMessages != null)
+            if (response?.OtherMessages != null)
             {
                 foreach (var message in response.OtherMessages)
                 {

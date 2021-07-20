@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CardCollectiveBot.DeckOfCards
+namespace CardCollectiveBot.BlackJack.Cards
 {
     public class PlayingCard
     {

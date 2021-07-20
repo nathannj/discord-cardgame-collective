@@ -1,11 +1,9 @@
-﻿using CardCollectiveBot.Common.Responses;
-using CardCollectiveBot.DeckOfCards;
+﻿using CardCollectiveBot.BlackJack.Cards;
+using CardCollectiveBot.Common.Responses;
 using Discord;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CardCollectiveBot.BlackJack
 {
@@ -91,6 +89,18 @@ namespace CardCollectiveBot.BlackJack
 
         public bool IsPlayerInGame(ulong playerId) => Players.FirstOrDefault(e => e.Id == playerId) != null;
 
+        public Player DoubleDown(ulong playerId)
+        {
+            var player = Players.FirstOrDefault(e => e.Id == playerId);
+
+            if (player != null && !player.IsDoubledDown && player.Hand.Count == 2 && player.CountScore() >= 9 && player.CountScore() <= 11)
+            {                
+                player.DoubleDown();
+            }
+
+            return player;
+        }
+
         public Player HitPlayer(ulong playerId)
         {
             var player = Players.FirstOrDefault(e => e.Id == playerId);
@@ -146,6 +156,21 @@ namespace CardCollectiveBot.BlackJack
             RefreshScoreboard($"{Scoreboard.Footer?.Text} game has ended! Rewards distributed and new game has been set up", true);
 
             return this;
+        }
+
+        public bool SplitPair(ulong playerId)
+        {
+            var player = Players.FirstOrDefault(e => e.Id == playerId);
+
+            var splitPlayer = player.SplitPair();
+
+            if (player != null && splitPlayer != null)
+            {
+                Players.Add(splitPlayer);
+                RefreshScoreboard($"{player.Nickname} has split pairs and has 2 hands, each with a wager of {player.Wager}.");
+            }            
+
+            return splitPlayer != null;
         }
 
         public EmbedBuilder RefreshScoreboard(string footer = null, bool isFinal = false)

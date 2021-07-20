@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>dotnet-CardCollectiveBot.Console2-62787186-9743-4D42-AC61-656328394D67</UserSecretsId>
+    <StartupObject>CardCollectiveBot.Console.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,5 +27,6 @@
     <ProjectReference Include="..\CardCollectiveBot.BlackJack\CardCollectiveBot.BlackJack.csproj" />
     <ProjectReference Include="..\CardCollectiveBot.Currency\CardCollectiveBot.Currency.csproj" />
     <ProjectReference Include="..\CardCollectiveBot.Misc\CardCollectiveBot.Misc.csproj" />
+    <ProjectReference Include="..\CardCollectiveBot.Uno\CardCollectiveBot.Uno.csproj" />
   </ItemGroup>
 </Project>

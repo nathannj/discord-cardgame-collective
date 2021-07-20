@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 
 namespace CardCollectiveBot.Currency.Module
 {
-    [Group("Currency")]
+    [Group("currency")]
+    [Alias("c")]
     public class CurrencyModule : ModuleBase<SocketCommandContext>
     {
         public ICurrencyService _currencyService { get; set; }
@@ -44,9 +45,10 @@ namespace CardCollectiveBot.Currency.Module
                 {
                     new EmbedFieldBuilder{Name = "!Currency", Value = "Returns how many mangcoins you have."},
                     new EmbedFieldBuilder{Name = "!Currency Create", Value = "If not already existing, you will get a new account."},
-                    new EmbedFieldBuilder{Name = "!Currency Transfer {coins} {username}", Value = "Transfers mangcoins from your account to the given users account."},
-                    new EmbedFieldBuilder{Name = "!Currency Reward {coins} {username}", Value = "ADMIN ONLY: reward a given user with a given number of coins."},
+                    new EmbedFieldBuilder{Name = "!Currency Transfer {username} {coins}", Value = "Transfers mangcoins from your account to the given users account."},
+                    new EmbedFieldBuilder{Name = "!Currency Reward {username} {coins}", Value = "ADMIN ONLY: reward a given user with a given number of coins."},
                     new EmbedFieldBuilder{Name = "Earning Mangcoins", Value = "Chatting in text chats this bot has access to will earn Mangcoins. Using This bots commands will not earn coins."},
+                    new EmbedFieldBuilder{Name = "Shorthand command aliases", Value = "The following words have acronyms to make using them easier:\nCurrency - c\nTransfer - t\nReward - r"}
                 }
             };
 
@@ -69,7 +71,8 @@ namespace CardCollectiveBot.Currency.Module
         }
 
         [Command("transfer")]
-        public async Task Transfer(int coins, string user)
+        [Alias("t")]
+        public async Task Transfer(string user, int coins)
         {
             var users = await Context.Guild.GetUsersAsync().FlattenAsync();
             var userToSendTo = users.FirstOrDefault(e => $"{e.Username}#{e.Discriminator}" == user);
@@ -87,9 +90,9 @@ namespace CardCollectiveBot.Currency.Module
         }
 
         [Command("reward")]
+        [Alias("r")]
         public async Task Reward(int coins, string user)
-        {
-            
+        {            
             var users = await Context.Guild.GetUsersAsync().FlattenAsync();
             var userToSendTo = users.FirstOrDefault(e => $"{e.Username}#{e.Discriminator}" == user);
 

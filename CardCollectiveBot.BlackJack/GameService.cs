@@ -1,13 +1,8 @@
 ﻿using CardCollectiveBot.Common.Responses;
-using CardCollectiveBot.DeckOfCards;
 using Discord;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace CardCollectiveBot.BlackJack
 {
@@ -68,6 +63,69 @@ namespace CardCollectiveBot.BlackJack
             SaveMatch(match);
 
             return new BlackjackResponse(match.Scoreboard, true, match.IsEndOfMatch ? match.GetRewards().ToList() : null);
+        }
+
+        public IResponse<int> GetPlayerWager(IGuildUser player, ulong channelId)
+        {
+            var match = GetMatch(player.GuildId, channelId);
+
+            if (match == null)
+            {
+                return new Response<int>(0, false, null, "Game does not exist! Use !Blackjack Create to start a new match");
+            }
+
+            var matchPlayer = match.Players.FirstOrDefault(e => e.Id == player.Id); ;
+
+            if (matchPlayer == null)
+            {
+                return new Response<int>(0, false, null, "Given player is not a part of this match");
+            }
+
+            SaveMatch(match);
+
+            return new Response<int>(matchPlayer.Wager);
+        }
+
+        public IResponse<EmbedBuilder> DoubleDown(IGuildUser player, ulong channelId)
+        {
+            var match = GetMatch(player.GuildId, channelId);
+
+            if (match == null)
+            {
+                return new BlackjackResponse(null, false, null, "Game does not exist! Use !Blackjack Create to start a new match");
+            }
+
+            var matchPlayer = match.DoubleDown(player.Id);
+
+            if (matchPlayer == null)
+            {
+                return new BlackjackResponse(null, false, null, "You are not a part of this game. Please wait for it to end or use !Blackjack Reset to start a new game");
+            }
+
+            SaveMatch(match);
+
+            return match.IsEndOfMatch ? FinishMatch(match) : new BlackjackResponse(match.Scoreboard);
+        }
+
+        public IResponse<EmbedBuilder> SplitPair(IGuildUser player, ulong channelId)
+        {
+            var match = GetMatch(player.GuildId, channelId);
+
+            if (match == null)
+            {
+                return new BlackjackResponse(null, false, null, "Game does not exist! Use !Blackjack Create to start a new match");
+            }
+
+            var splitPairSuccess = match.SplitPair(player.Id);
+
+            if (splitPairSuccess == false)
+            {
+                return new BlackjackResponse(null, false, null, "You can not currently Split Pairs");
+            }
+
+            SaveMatch(match);
+
+            return match.IsEndOfMatch ? FinishMatch(match) : new BlackjackResponse(match.Scoreboard);
         }
 
         public IResponse<EmbedBuilder> Hit(IGuildUser player, ulong channelId)

@@ -5,7 +5,9 @@ using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,53 +22,10 @@ namespace CardCollectiveBot.Misc
 
             var audioClient = await channel.ConnectAsync();
 
-            await SendAsync(audioClient, "C:\\Users\\njack\\Desktop\\audioCues\\uhyeah2.ogg");
+            var z = Directory.GetCurrentDirectory();
+            await SendAsync(audioClient, "..\\..\\..\\..\\audioCues\\uhyeah2.ogg");
 
             await channel.DisconnectAsync();
-        }
-
-        [Command("shush", RunMode = RunMode.Async)]
-        public async Task StartShush(IVoiceChannel channel = null)
-        {
-            channel = await AssignChannel(channel);
-
-            var audioClient = await channel.ConnectAsync();
-
-            var discord = await SendAsync(audioClient, "C:\\Users\\njack\\Desktop\\audioCues\\activation.ogg");
-
-            var x = channel.GetUsersAsync();
-
-            var y = (await x.FlattenAsync()).Where(e => !e.IsBot).Select(e => (e as SocketGuildUser)).ToList();
-
-            y.ForEach(async e => await ListenUserAsync((InputStream)e.AudioStream, discord, audioClient));
-        }
-
-        [Command("stop", RunMode = RunMode.Async)]
-        public async Task Stop(IVoiceChannel channel = null)
-        {
-            channel = await AssignChannel(channel);
-
-            await channel.DisconnectAsync();
-        }
-
-        private async Task ListenUserAsync(InputStream userAudioStream, AudioOutStream discord, IAudioClient client)
-        {
-            while (true)
-            {
-                if (userAudioStream.AvailableFrames > 0)
-                {
-                    var task = SendAsync(client, "C:\\Users\\njack\\Desktop\\audioCues\\shush.ogg", discord);
-
-                    Thread.Sleep(500);
-
-                    await task;
-                }
-
-                for (; userAudioStream.AvailableFrames > 0;)
-                {
-                    await userAudioStream.ReadFrameAsync(CancellationToken.None);
-                }
-            }
         }
 
         private async Task<IVoiceChannel> AssignChannel(IVoiceChannel channel)

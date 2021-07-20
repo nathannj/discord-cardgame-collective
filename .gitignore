@@ -28,3 +28,13 @@
 /CardCollectiveBot.Data/bin/Debug/netcoreapp3.1
 /CardCollectiveBot.Data/obj/Debug/netcoreapp3.1
 /CardCollectiveBot.Data/obj
+/CardCollectiveBot.Uno/obj
+/CardCollective.Services/bin/Release/netcoreapp3.1
+/CardCollectiveBot.BlackJack/bin/Release/netcoreapp3.1
+/CardCollectiveBot.Console/bin/Release/netcoreapp3.1
+/CardCollectiveBot.Console/Properties/PublishProfiles
+/CardCollectiveBot.Currency/bin/Release/netcoreapp3.1
+/CardCollectiveBot.Data/bin/Release/netcoreapp3.1
+/CardCollectiveBot.Currency/Properties/PublishProfiles
+/CardCollectiveBot.Misc/bin/Release/netcoreapp3.1
+/CardCollectiveBot.Uno/bin

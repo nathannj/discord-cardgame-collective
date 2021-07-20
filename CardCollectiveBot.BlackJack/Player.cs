@@ -1,10 +1,8 @@
-﻿using CardCollectiveBot.DeckOfCards;
+﻿using CardCollectiveBot.BlackJack.Cards;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace CardCollectiveBot.BlackJack
 {
@@ -24,7 +22,9 @@ namespace CardCollectiveBot.BlackJack
 
         public PlayerState State { get; private set; }
 
-        public int Wager { get; }
+        public bool IsDoubledDown { get; private set; }
+
+        public int Wager { get; private set; }
 
         public Player(ulong id, string nickname, int wager, PlayerState state = PlayerState.Choosing)
         {
@@ -33,6 +33,7 @@ namespace CardCollectiveBot.BlackJack
             ActualHand = new List<PlayingCard>();
             State = state;
             Wager = wager;
+            IsDoubledDown = false;
         }
 
         [JsonConstructor]
@@ -66,6 +67,28 @@ namespace CardCollectiveBot.BlackJack
             return total;
         }
 
+        public void DoubleDown()
+        {
+            IsDoubledDown = true;
+            Wager *= 2;
+        }
+
+        public Player SplitPair()
+        {
+            Player player = null;
+
+            if(ActualHand.Count == 2 && ActualHand.All(e => e.Value == ActualHand.First().Value))
+            {
+                player = new Player(Id, Nickname, Wager / 2);
+                player.Hit(ActualHand[1]);
+
+                Wager /= 2;
+                ActualHand.RemoveAt(1);
+            }
+
+            return player;
+        }
+
         public List<PlayingCard> Hit(PlayingCard card)
         {
             ActualHand.Add(card);
@@ -90,6 +113,6 @@ namespace CardCollectiveBot.BlackJack
         public void ResetState()
         {
             State = PlayerState.Choosing;
-        }
+        }        
     }
 }
